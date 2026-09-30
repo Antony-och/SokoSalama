@@ -1,0 +1,6 @@
+{
+  "name": "SokoSalama - Kenyan Escrow Marketplace",
+  "description": "Production-ready Kenyan multi-vendor e-commerce marketplace with escrow security, M-Pesa STK integration, sub-order splitting, and double-entry ledger.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

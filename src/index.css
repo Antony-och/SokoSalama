@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@keyframes sokosalama-announcement-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.announcement-marquee { animation: sokosalama-announcement-scroll 34s linear infinite; }
+.announcement-marquee:hover { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  .announcement-marquee { animation: none; width: 100%; justify-content: center; }
+  .announcement-marquee > div:nth-child(2) { display: none; }
+}
