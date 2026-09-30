@@ -28,6 +28,18 @@ async function startServer() {
     res.json({ session: currentSession });
   });
 
+  app.put('/api/auth/profile', (req: Request, res: Response) => {
+    if (currentSession.isGuest || currentSession.role !== 'CUSTOMER') {
+      return res.status(401).json({ error: 'Sign in with a customer account to edit your profile.' });
+    }
+    try {
+      currentSession = db.updateCustomerProfile(currentSession.id, req.body);
+      res.json({ session: currentSession });
+    } catch (err: any) {
+      res.status(400).json({ error: err.message || 'Could not update your profile.' });
+    }
+  });
+
   // User Login (Email or Phone + Password)
   app.post('/api/auth/login', (req: Request, res: Response) => {
     const { identifier, password } = req.body;

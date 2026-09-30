@@ -83,6 +83,22 @@ export const api = {
     }
   },
 
+  async updateCustomerProfile(userId: string, updates: { name: string; email: string; phone: string }): Promise<UserSession> {
+    try {
+      const res = await fetch('/api/auth/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Could not update your profile.');
+      return data.session as UserSession;
+    } catch (error: any) {
+      if (error.message && error.message !== 'Failed to fetch') throw error;
+      return db.updateCustomerProfile(userId, updates);
+    }
+  },
+
   async registerVendor(data: {
     storeName: string;
     category?: string;

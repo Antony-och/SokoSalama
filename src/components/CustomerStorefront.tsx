@@ -20,6 +20,21 @@ import {
 } from 'lucide-react';
 import { Product, Vendor, HotDeal } from '../types';
 import { MerchantDirectory } from './MerchantDirectory';
+import heroOne from '../assets/images/hero_1.jpg';
+import heroTwo from '../assets/images/hero_2.jpg';
+import heroThree from '../assets/images/hero_3.jpg';
+import heroFour from '../assets/images/hero_4.jpg';
+import heroFive from '../assets/images/hero_5.jpg';
+import heroSix from '../assets/images/hero_6.jpg';
+
+const heroSlides = [
+  { image: heroOne, alt: 'Kenyan artisan beadwork and handcrafted goods', title: 'Kenyan Artisan Crafts', description: 'Discover beadwork and handmade pieces from local makers.' },
+  { image: heroTwo, alt: 'A Kenyan textile and weaving store', title: 'Textiles & Weaving', description: 'Meet independent textile stores and skilled local weavers.' },
+  { image: heroThree, alt: 'Electronics and gadgets displayed in a modern shop', title: 'Electronics & Gadgets', description: 'Discover phones, laptops, smart devices, accessories, and more.', },
+  { image: heroFour, alt: 'A modern home and kitchen shop featuring furniture, cookware, and household essentials', title: 'Home & Kitchen', description: 'Discover furniture, cookware, appliances, décor, and everyday home essentials.', },
+  { image: heroFive, alt: 'Beauty and personal care products', title: 'Beauty & Personal Care', description: 'Shop skincare, cosmetics, haircare, fragrances, and personal care essentials.', },
+  { image: heroSix, alt: 'A supermarket stocked with groceries and everyday household essentials', title: 'Supermarket & Groceries', description: 'Everything you need, from groceries and fresh produce to household essentials.', },
+];
 
 // ============================================================================
 // LIVE TICKING COUNTDOWN COMPONENT (Updates every second)
@@ -124,6 +139,14 @@ export const CustomerStorefront: React.FC<CustomerStorefrontProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedVendorFilter, setSelectedVendorFilter] = useState<string>('All');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'rating' | 'discount'>('featured');
+  const [heroSlide, setHeroSlide] = useState(0);
+  const [heroPaused, setHeroPaused] = useState(false);
+
+  useEffect(() => {
+    if (heroPaused || heroSlides.length < 2) return;
+    const timer = window.setInterval(() => setHeroSlide((current) => (current + 1) % heroSlides.length), 5000);
+    return () => window.clearInterval(timer);
+  }, [heroPaused]);
   const categories = [
     'All',
     'Phones & Tablets',
@@ -194,8 +217,8 @@ export const CustomerStorefront: React.FC<CustomerStorefrontProps> = ({
               {/* Glass Kicker Capsule */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-amber-300 tracking-wider mb-4 shadow-xs w-fit">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>Kenya's Escrow Marketplace</span>
-                <span aria-hidden="true" className="text-white/40">Â·</span>
+                <span>Kenya's #1 Marketplace</span>
+                <span aria-hidden="true" className="text-white/40">|</span>
                 <span className="text-white/80">Neutral to Every Brand</span>
               </div>
 
@@ -263,9 +286,12 @@ export const CustomerStorefront: React.FC<CustomerStorefrontProps> = ({
             </div>
 
             {/* Hero Visual Media with Glass Overlay */}
-            <div className="lg:col-span-5 relative min-h-[340px] lg:min-h-full overflow-hidden">
-              <img src="/src/assets/images/hero_nairobi_crafts_1790583409822.jpg" alt="SokoSalama Kenyan marketplace" referrerPolicy="no-referrer" className="h-full w-full scale-102 object-cover object-center transition-transform duration-700 hover:scale-105" />
+            <div className="relative min-h-[340px] overflow-hidden lg:col-span-5 lg:min-h-full" onMouseEnter={() => setHeroPaused(true)} onMouseLeave={() => setHeroPaused(false)} onFocusCapture={() => setHeroPaused(true)} onBlurCapture={() => setHeroPaused(false)}>
+              <img key={heroSlides[heroSlide].image} src={heroSlides[heroSlide].image} alt={heroSlides[heroSlide].alt} className="h-full w-full scale-102 animate-[hero-fade_700ms_ease-in-out] object-cover object-center transition-transform duration-700 hover:scale-105 motion-reduce:animate-none" />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent lg:bg-gradient-to-r lg:from-neutral-950/90 lg:via-transparent lg:to-transparent" />
+              <div className="absolute right-5 top-5 z-10 flex items-center gap-1.5 rounded-full border border-white/20 bg-neutral-950/40 px-2.5 py-2 backdrop-blur-md" aria-label="Hero slideshow controls">
+                {heroSlides.map((slide, index) => <button key={slide.image} type="button" onClick={() => setHeroSlide(index)} aria-label={`Show ${slide.title} slide`} aria-pressed={heroSlide === index} className={`h-2 rounded-full transition-all ${heroSlide === index ? 'w-5 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'}`} />)}
+              </div>
 
               {/* Floating Frosted Glass Live Badge */}
               <div className="absolute bottom-6 left-6 right-6 lg:right-auto bg-neutral-950/60 backdrop-blur-xl border border-white/20 rounded-2xl p-4 shadow-xl">
@@ -274,11 +300,11 @@ export const CustomerStorefront: React.FC<CustomerStorefrontProps> = ({
                     <Shield className="w-5 h-5 text-amber-400" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-xs font-bold text-white truncate">
-                      Multi-Vendor Cart Split & Escrow Lock
+                    <div className="text-xs font-bold text-white truncate" aria-live="polite">
+                      {heroSlides[heroSlide].title}
                     </div>
                     <div className="text-[11px] text-neutral-300 truncate">
-                      Sub-orders dispatch independently with real-time tracking
+                      {heroSlides[heroSlide].description}
                     </div>
                   </div>
                 </div>
@@ -680,7 +706,7 @@ export const CustomerStorefront: React.FC<CustomerStorefrontProps> = ({
                     <div className="p-5 space-y-2">
                       <div className="flex items-center gap-2 text-[11px] text-neutral-500 flex-wrap">
                         <span className="font-semibold text-neutral-600">{prod.category}</span>
-                        <span aria-hidden="true" className="text-neutral-300">Â·</span>
+                        <span aria-hidden="true" className="text-neutral-300">|</span>
                         <span className="text-amber-800 font-bold">{prod.vendorName}</span>
                       </div>
 

@@ -8,6 +8,7 @@ import { CustomerOrders } from './components/CustomerOrders';
 import { VendorDashboard } from './components/VendorDashboard';
 import { AdminConsole } from './components/AdminConsole';
 import { AuthPage } from './components/AuthPage';
+import { CustomerProfileModal } from './components/CustomerProfileModal';
 import { Footer } from './components/Footer';
 import { api } from './services/apiClient';
 import { 
@@ -36,6 +37,7 @@ export default function App() {
   const [authReturnView, setAuthReturnView] = useState<'storefront' | 'orders' | 'vendor' | 'admin'>('storefront');
   const [activeView, setActiveView] = useState<'storefront' | 'orders' | 'vendor' | 'admin' | 'auth'>('storefront');
   const [authInitialMode, setAuthInitialMode] = useState<'login' | 'signup'>('login');
+  const [customerProfileSection, setCustomerProfileSection] = useState<'account' | 'settings' | null>(null);
 
   // Core Data States
   const [products, setProducts] = useState<Product[]>([]);
@@ -546,6 +548,7 @@ export default function App() {
         announcementEnabled={siteSettings.announcementBarEnabled === true}
         announcementText={siteValue('announcementBarText')}
         onLogout={handleLogout}
+        onCustomerPanel={setCustomerProfileSection}
         onOpenAuth={(mode = 'login') => {
           setAuthInitialMode(mode);
           setActiveView('auth');
@@ -560,6 +563,16 @@ export default function App() {
           setActiveView(view);
         }}
       />
+
+      {customerProfileSection && !currentSession.isGuest && <CustomerProfileModal
+        currentSession={currentSession}
+        section={customerProfileSection}
+        onClose={() => setCustomerProfileSection(null)}
+        onSaveProfile={async (updates) => {
+          const updatedSession = await api.updateCustomerProfile(currentSession.id, updates);
+          setCurrentSession(updatedSession);
+        }}
+      />}
 
       {/* Main Content Area */}
       <main className="flex-1">

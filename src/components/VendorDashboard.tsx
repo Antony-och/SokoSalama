@@ -141,6 +141,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
   const [newImageUrl, setNewImageUrl] = useState('https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600&auto=format&fit=crop&q=80');
   const [newVariantLabel, setNewVariantLabel] = useState('Standard / Default Edition');
   const [productSubmitLoading, setProductSubmitLoading] = useState(false);
+  const [productSubmitError, setProductSubmitError] = useState('');
 
   // Edit product modal state
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -285,6 +286,11 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
   // Handle Add Product
   const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setProductSubmitError('');
+    if (newCompareAtPrice !== '' && Number(newCompareAtPrice) <= newPrice) {
+      setProductSubmitError('Compare price must be higher than the selling price.');
+      return;
+    }
     setProductSubmitLoading(true);
     try {
       const generatedSku = newSku.trim() || `${newCategory.substring(0, 3).toUpperCase().replace(/[^A-Z]/g, 'X')}-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -311,7 +317,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
       setNewCompareAtPrice('');
       showToast('Product submitted successfully for compliance review!');
     } catch (err: any) {
-      alert(err.message || 'Product submission failed');
+      setProductSubmitError(err.message || 'Product submission failed. Please try again.');
     } finally {
       setProductSubmitLoading(false);
     }
@@ -595,7 +601,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
 
           {/* Add Product */}
           <button
-            onClick={() => setShowAddProduct(true)}
+            onClick={() => { setProductSubmitError(''); setShowAddProduct(true); }}
             className="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 shadow-2xs"
           >
             <Plus className="w-3.5 h-3.5" />
@@ -712,114 +718,25 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. TABS NAVIGATION */}
-      {/* ========================================================================= */}
-      <div className="border-b border-neutral-200/90 overflow-x-auto scrollbar-none">
-        <div className="flex gap-6 text-xs font-semibold min-w-max">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`pb-3 cursor-pointer transition-colors flex items-center gap-1.5 ${
-              activeTab === 'overview'
-                ? 'text-neutral-900 border-b-2 border-amber-800 font-bold'
-                : 'text-neutral-500 hover:text-neutral-800'
-            }`}
-          >
-            <BarChart3 className="w-4 h-4" />
-            <span>Overview & Analytics</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('orders')}
-            className={`pb-3 cursor-pointer transition-colors flex items-center gap-1.5 ${
-              activeTab === 'orders'
-                ? 'text-neutral-900 border-b-2 border-amber-800 font-bold'
-                : 'text-neutral-500 hover:text-neutral-800'
-            }`}
-          >
-            <Package className="w-4 h-4" />
-            <span>Fulfillment Orders</span>
-            {pendingOrdersCount > 0 && (
-              <span className="px-1.5 py-0.2 bg-amber-100 text-amber-900 text-[10px] rounded-full font-bold">
-                {pendingOrdersCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('products')}
-            className={`pb-3 cursor-pointer transition-colors flex items-center gap-1.5 ${
-              activeTab === 'products'
-                ? 'text-neutral-900 border-b-2 border-amber-800 font-bold'
-                : 'text-neutral-500 hover:text-neutral-800'
-            }`}
-          >
-            <Tag className="w-4 h-4" />
-            <span>Products & Stock</span>
-            {lowStockCount > 0 && (
-              <span className="px-1.5 py-0.2 bg-rose-100 text-rose-800 text-[10px] rounded-full font-bold">
-                {lowStockCount} low
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('ledger')}
-            className={`pb-3 cursor-pointer transition-colors flex items-center gap-1.5 ${
-              activeTab === 'ledger'
-                ? 'text-neutral-900 border-b-2 border-amber-800 font-bold'
-                : 'text-neutral-500 hover:text-neutral-800'
-            }`}
-          >
-            <FileText className="w-4 h-4" />
-            <span>Double-Entry Ledger</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('payouts')}
-            className={`pb-3 cursor-pointer transition-colors flex items-center gap-1.5 ${
-              activeTab === 'payouts'
-                ? 'text-neutral-900 border-b-2 border-amber-800 font-bold'
-                : 'text-neutral-500 hover:text-neutral-800'
-            }`}
-          >
-            <Send className="w-4 h-4" />
-            <span>M-Pesa Payouts</span>
-            <span className="text-neutral-400">({payouts.length})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('profile')}
-            className={`pb-3 cursor-pointer transition-colors flex items-center gap-1.5 ${
-              activeTab === 'profile'
-                ? 'text-neutral-900 border-b-2 border-amber-800 font-bold'
-                : 'text-neutral-500 hover:text-neutral-800'
-            }`}
-          >
-            <Store className="w-4 h-4" />
-            <span>Store Profile & Settings</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('disputes')}
-            className={`pb-3 cursor-pointer transition-colors flex items-center gap-1.5 ${
-              activeTab === 'disputes'
-                ? 'text-neutral-900 border-b-2 border-amber-800 font-bold'
-                : 'text-neutral-500 hover:text-neutral-800'
-            }`}
-          >
-            <AlertTriangle className="w-4 h-4" />
-            <span>Escrow Disputes</span>
-            {disputes.length > 0 && (
-              <span className="px-1.5 py-0.2 bg-rose-100 text-rose-800 text-[10px] rounded-full font-bold">
-                {disputes.length}
-              </span>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* ========================================================================= */}
-      {/* TAB 1: OVERVIEW & ANALYTICS */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[230px_minmax(0,1fr)] lg:items-start">
+        <aside className="rounded-2xl border border-neutral-200 bg-white/85 p-3 shadow-sm backdrop-blur-xl lg:sticky lg:top-24">
+          <div className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-neutral-400">Store workspace</div>
+          <nav aria-label="Vendor portal sections" className="flex gap-1 overflow-x-auto pb-1 text-xs font-semibold lg:flex-col lg:overflow-visible">
+            {[
+              { id: 'overview', label: 'Overview & Analytics', icon: <BarChart3 className="h-4 w-4" /> },
+              { id: 'orders', label: 'Fulfillment Orders', icon: <Package className="h-4 w-4" />, badge: pendingOrdersCount || undefined, badgeClass: 'bg-amber-100 text-amber-900' },
+              { id: 'products', label: 'Products & Stock', icon: <Tag className="h-4 w-4" />, badge: lowStockCount ? `${lowStockCount} low` : undefined, badgeClass: 'bg-rose-100 text-rose-800' },
+              { id: 'ledger', label: 'Double-Entry Ledger', icon: <FileText className="h-4 w-4" /> },
+              { id: 'payouts', label: 'M-Pesa Payouts', icon: <Send className="h-4 w-4" />, badge: payouts.length || undefined, badgeClass: 'bg-emerald-100 text-emerald-800' },
+              { id: 'profile', label: 'Store Profile & Settings', icon: <Store className="h-4 w-4" /> },
+              { id: 'disputes', label: 'Escrow Disputes', icon: <AlertTriangle className="h-4 w-4" />, badge: disputes.length || undefined, badgeClass: 'bg-rose-100 text-rose-800' },
+            ].map((item) => <button key={item.id} type="button" onClick={() => setActiveTab(item.id as typeof activeTab)} aria-current={activeTab === item.id ? 'page' : undefined} className={`flex shrink-0 items-center gap-2.5 rounded-xl px-3 py-2.5 text-left transition lg:w-full ${activeTab === item.id ? 'bg-neutral-900 text-white shadow-sm' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'}`}>
+              <span className={activeTab === item.id ? 'text-amber-300' : 'text-neutral-400'}>{item.icon}</span><span className="flex-1 whitespace-nowrap">{item.label}</span>{item.badge !== undefined && <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none ${activeTab === item.id ? 'bg-white/15 text-white' : item.badgeClass}`}>{item.badge}</span>}
+            </button>)}
+          </nav>
+          <div className="mt-3 hidden rounded-xl bg-neutral-50 p-3 text-[11px] lg:block"><div className="font-semibold text-neutral-800">Need help?</div><p className="mt-1 leading-relaxed text-neutral-500">Contact marketplace support for store or payout assistance.</p></div>
+        </aside>
+        <section className="min-w-0 space-y-5">      {/* TAB 1: OVERVIEW & ANALYTICS */}
       {/* ========================================================================= */}
       {activeTab === 'overview' && (
         <div className="space-y-6">
@@ -1719,7 +1636,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
 
             <form onSubmit={handleSaveProfile} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1">
+                <label className="mb-1.5 block text-xs font-semibold text-neutral-700">
                   Artisan Store Brand Name
                 </label>
                 <input
@@ -1733,7 +1650,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-neutral-700 mb-1">
+                  <label className="mb-1.5 block text-xs font-semibold text-neutral-700">
                     Store Contact Phone (Inquiries)
                   </label>
                   <input
@@ -1959,7 +1876,10 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
       )}
 
       {/* ========================================================================= */}
-      {/* MODAL 1: DISPATCH SUB-ORDER */}
+        </section>
+      </div>
+
+            {/* MODAL 1: DISPATCH SUB-ORDER */}
       {/* ========================================================================= */}
       {dispatchModalSubOrder && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 flex items-center justify-center p-4">
@@ -2190,26 +2110,29 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
       {/* MODAL 3: SUBMIT PRODUCT (UNIVERSAL & BRAND-NEUTRAL) */}
       {/* ========================================================================= */}
       {showAddProduct && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
+        <div className="fixed inset-0 z-[80] flex items-end justify-center bg-neutral-950/50 p-0 backdrop-blur-sm sm:items-center sm:p-5">
+          <div className="flex max-h-[95vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-3xl border border-white/70 bg-[#F8F8F6] shadow-2xl sm:rounded-3xl">
+            <div className="sticky top-0 z-20 flex items-start justify-between gap-4 border-b border-neutral-200 bg-white/95 px-5 py-4 backdrop-blur sm:px-7 sm:py-5">
               <div>
-                <h3 className="text-base font-bold text-neutral-900 flex items-center gap-2">
+                <h3 className="flex items-center gap-2 text-lg font-bold tracking-tight text-neutral-900">
                   <span>Submit Product</span>
                   <span className="text-[10px] font-semibold bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded">
                     Universal Catalog
                   </span>
                 </h3>
-                <p className="text-xs text-neutral-500 mt-0.5">
+                <p className="mt-1 max-w-xl text-xs leading-relaxed text-neutral-500">
                   List any product across electronics, fashion, home appliances, food, or crafts. Neutral to all brands.
                 </p>
               </div>
-              <button onClick={() => setShowAddProduct(false)} className="text-neutral-400 hover:text-neutral-600 cursor-pointer">
+              <button type="button" aria-label="Close submit product form" onClick={() => setShowAddProduct(false)} className="rounded-xl border border-neutral-200 bg-white p-2 text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleProductSubmit} className="space-y-4">
+            <form onSubmit={handleProductSubmit} className="flex min-h-0 flex-1 flex-col overflow-hidden">
+              <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-5 sm:px-7 sm:py-6">
+              {productSubmitError && <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-medium text-rose-800">{productSubmitError}</div>}
+              <div className="flex items-center gap-2 border-b border-neutral-200 pb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-[10px] text-amber-900">1</span>Product information</div>
               {/* Product Title */}
               <div>
                 <label className="block text-xs font-semibold text-neutral-700 mb-1">
@@ -2220,7 +2143,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
                   required
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full text-xs p-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-xs text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                   placeholder="e.g. Samsung Galaxy S24 Ultra 5G (256GB) or Nike Air Max 270"
                 />
               </div>
@@ -2228,26 +2151,26 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
               {/* Brand and Category */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-neutral-700 mb-1">
+                  <label className="mb-1.5 block text-xs font-semibold text-neutral-700">
                     Brand / Manufacturer <span className="text-neutral-400 font-normal">(Optional)</span>
                   </label>
                   <input
                     type="text"
                     value={newBrand}
                     onChange={(e) => setNewBrand(e.target.value)}
-                    className="w-full text-xs p-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-xs text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                     placeholder="e.g. Samsung, Sony, Nike, HP, or Generic"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-neutral-700 mb-1">
+                  <label className="mb-1.5 block text-xs font-semibold text-neutral-700">
                     Category <span className="text-rose-600">*</span>
                   </label>
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    className="w-full text-xs p-2.5 border border-neutral-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-xs text-neutral-900 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                   >
                     {UNIVERSAL_CATEGORIES.map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
@@ -2273,7 +2196,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
                     type="text"
                     value={newSku}
                     onChange={(e) => setNewSku(e.target.value)}
-                    className="w-full text-xs p-2.5 border border-neutral-300 rounded-lg font-mono text-[11px]"
+                    className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2.5 font-mono text-[11px] text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                     placeholder="e.g. SAM-S24U-256 or NKE-AM270"
                   />
                 </div>
@@ -2283,7 +2206,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
                   <select
                     value={newCondition}
                     onChange={(e) => setNewCondition(e.target.value as any)}
-                    className="w-full text-xs p-2.5 border border-neutral-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-neutral-900 capitalize"
+                    className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-xs text-neutral-900 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-100 capitalize"
                   >
                     <option value="new">Brand New (Factory Sealed)</option>
                     <option value="refurbished">Refurbished / Certified Pre-Owned</option>
@@ -2294,6 +2217,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
               </div>
 
               {/* Pricing & Stock */}
+              <div className="flex items-center gap-2 border-b border-neutral-200 pb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-[10px] text-amber-900">2</span>Pricing &amp; inventory</div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-neutral-700 mb-1">
@@ -2305,7 +2229,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
                     min={1}
                     value={newPrice}
                     onChange={(e) => setNewPrice(Number(e.target.value))}
-                    className="w-full text-xs p-2.5 border border-neutral-300 rounded-lg tabular-nums focus:outline-none focus:ring-1 focus:ring-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-xs tabular-nums outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                   />
                 </div>
 
@@ -2318,7 +2242,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
                     min={0}
                     value={newCompareAtPrice}
                     onChange={(e) => setNewCompareAtPrice(e.target.value ? Number(e.target.value) : '')}
-                    className="w-full text-xs p-2.5 border border-neutral-300 rounded-lg tabular-nums placeholder:text-neutral-400"
+                    className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-xs tabular-nums outline-none transition placeholder:text-neutral-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                     placeholder="e.g. 5000"
                   />
                 </div>
@@ -2333,21 +2257,22 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
                     min={1}
                     value={newStock}
                     onChange={(e) => setNewStock(Number(e.target.value))}
-                    className="w-full text-xs p-2.5 border border-neutral-300 rounded-lg tabular-nums focus:outline-none focus:ring-1 focus:ring-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-xs tabular-nums outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                   />
                 </div>
               </div>
 
               {/* Variant / Edition Label */}
+              <div className="flex items-center gap-2 border-b border-neutral-200 pb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-[10px] text-amber-900">3</span>Specifications</div>
               <div>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1">
+                <label className="mb-1.5 block text-xs font-semibold text-neutral-700">
                   Default Variant / Specification Label
                 </label>
                 <input
                   type="text"
                   value={newVariantLabel}
                   onChange={(e) => setNewVariantLabel(e.target.value)}
-                  className="w-full text-xs p-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-xs text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                   placeholder="e.g. 256GB / Titanium Gray, Size 42, or Standard Edition"
                 />
               </div>
@@ -2362,27 +2287,28 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
                   rows={3}
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
-                  className="w-full text-xs p-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-neutral-900 leading-relaxed"
+                  className="w-full resize-y rounded-xl border border-neutral-200 bg-white px-3 py-3 text-xs leading-relaxed text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                   placeholder="Detailed product specifications, key features, package contents, warranty details, and usage notes..."
                 />
               </div>
 
               {/* Image Input and Preset Gallery */}
-              <div>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 border-b border-neutral-200 pb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-[10px] text-amber-900">4</span>Product imagery</div>
                 <label className="block text-xs font-semibold text-neutral-700 mb-1">
                   Product Image URL <span className="text-rose-600">*</span>
                 </label>
-                <div className="flex gap-2 mb-2">
+                <div className="mb-3 flex gap-2 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 p-3">
                   <input
                     type="text"
                     required
                     value={newImageUrl}
                     onChange={(e) => setNewImageUrl(e.target.value)}
-                    className="flex-1 text-xs p-2.5 border border-neutral-300 rounded-lg font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-neutral-900"
+                    className="min-w-0 flex-1 rounded-xl border border-neutral-200 bg-white px-3 py-2.5 font-mono text-[11px] text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
                     placeholder="https://images.unsplash.com/... or asset URL"
                   />
                   {newImageUrl && (
-                    <div className="w-10 h-10 rounded-lg border border-neutral-200 overflow-hidden shrink-0 bg-neutral-100">
+                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-neutral-200 bg-white p-0.5">
                       <img
                         src={newImageUrl}
                         alt="Preview"
@@ -2395,19 +2321,19 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
                   )}
                 </div>
 
-                <div className="text-[11px] text-neutral-500 font-semibold mb-1.5">
+                <div className="mb-2 text-[11px] font-semibold text-neutral-600">
                   Quick Preset Category Imagery:
                 </div>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {universalImagePresets.map(img => (
                     <button
                       type="button"
                       key={img.label}
                       onClick={() => setNewImageUrl(img.url)}
-                      className={`text-left text-[11px] p-1.5 rounded-lg border flex items-center gap-2 cursor-pointer transition-colors ${
+                      className={`min-w-0 rounded-xl border p-2 text-left text-[11px] flex items-center gap-2 cursor-pointer transition-all ${
                         newImageUrl === img.url
-                          ? 'border-neutral-900 bg-neutral-100 font-semibold text-neutral-900 ring-1 ring-neutral-900'
-                          : 'border-neutral-200 hover:bg-neutral-50 text-neutral-700'
+                          ? 'border-amber-500 bg-amber-50 font-semibold text-neutral-900 ring-1 ring-amber-300'
+                          : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50'
                       }`}
                     >
                       <img src={img.url} alt={img.label} className="w-6 h-6 object-cover rounded shrink-0 bg-neutral-200" />
@@ -2418,18 +2344,19 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-2.5 pt-3 border-t border-neutral-200">
+              </div>
+              <div className="shrink-0 flex flex-col-reverse gap-2 border-t border-neutral-200 bg-white/95 p-4 backdrop-blur sm:flex-row sm:justify-end sm:px-7">
                 <button
                   type="button"
                   onClick={() => setShowAddProduct(false)}
-                  className="flex-1 py-2.5 text-xs font-semibold text-neutral-600 bg-neutral-100 rounded-lg hover:bg-neutral-200 cursor-pointer"
+                  className="rounded-xl border border-neutral-200 bg-white px-5 py-2.5 text-xs font-semibold text-neutral-700 transition hover:bg-neutral-50 cursor-pointer sm:min-w-32"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={productSubmitLoading}
-                  className="flex-1 py-2.5 text-xs font-semibold text-white bg-neutral-900 hover:bg-neutral-800 rounded-lg cursor-pointer disabled:opacity-50"
+                  className="rounded-xl bg-neutral-900 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-neutral-800 cursor-pointer disabled:opacity-50 sm:min-w-48"
                 >
                   {productSubmitLoading ? 'Submitting Product...' : 'Submit Product'}
                 </button>

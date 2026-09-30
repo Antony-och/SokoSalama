@@ -2036,6 +2036,27 @@ class MarketplaceDataStore {
     return vendor;
   }
 
+  updateCustomerProfile(userId: string, updates: { name: string; email: string; phone: string }): UserSession {
+    const user = this.users.find((account) => account.id === userId && account.role === 'CUSTOMER');
+    if (!user) throw new Error('Customer account not found.');
+
+    const name = updates.name.trim();
+    const email = updates.email.trim().toLowerCase();
+    const phone = updates.phone.trim();
+    if (name.length < 2) throw new Error('Enter your full name.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Enter a valid email address.');
+    if (!/^\+?[\d\s()-]{9,16}$/.test(phone)) throw new Error('Enter a valid phone number.');
+
+    const duplicate = this.users.find((account) => account.id !== userId && account.role === 'CUSTOMER' && (account.email.toLowerCase() === email || account.phone === phone));
+    if (duplicate) throw new Error('That email address or phone number is already in use.');
+
+    user.name = name;
+    user.email = email;
+    user.phone = phone;
+    this.logAudit('CUSTOMER', user.id, user.name, 'PROFILE_UPDATED', 'USER', user.id, { updatedFields: ['name', 'email', 'phone'] });
+    return { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role, county: user.county, town: user.town };
+  }
+
   // 10. Update Commission Rules
   saveCommissionRule(rule: CommissionRule, adminSession: UserSession) {
     const idx = this.commissionRules.findIndex(r => r.id === rule.id);

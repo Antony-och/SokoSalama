@@ -267,6 +267,7 @@ export interface AuditLog {
     | 'ZONE_CONFIGURED'
     | 'USER_LOGIN'
     | 'USER_REGISTERED'
+    | 'PROFILE_UPDATED'
     | 'VENDOR_ONBOARDED'
     | 'PASSWORD_RESET';
   targetType: 'ORDER' | 'SUBORDER' | 'PRODUCT' | 'WALLET' | 'PAYOUT' | 'COMMISSION_RULE' | 'VENDOR' | 'SETTINGS' | 'DISPUTE' | 'ZONE' | 'USER';

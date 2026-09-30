@@ -13,6 +13,7 @@ interface NavbarProps {
   onLogout?: () => void;
   onOpenAuth?: (mode?: 'login' | 'signup') => void;
   onNavigate?: (view: 'storefront' | 'orders' | 'vendor' | 'admin' | 'auth') => void;
+  onCustomerPanel?: (section: 'account' | 'settings') => void;
   brandName?: string;
   brandLogoUrl?: string;
   announcementEnabled?: boolean;
@@ -30,6 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLogout,
   onOpenAuth,
   onNavigate,
+  onCustomerPanel,
   brandName = 'SokoSalama',
   brandLogoUrl,
   announcementEnabled = false,
@@ -220,7 +222,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </button>
                 </div> : <div className="py-1">
                   {['My Account', 'My Orders', 'Track Orders', 'Settings'].map((label) => (
-                    <button key={label} onClick={() => { navigate(label === 'My Orders' || label === 'Track Orders' ? 'orders' : 'storefront'); setRoleMenuOpen(false); }} className="w-full px-3.5 py-2 text-left hover:bg-neutral-50 text-neutral-700">{label}</button>
+                    <button key={label} onClick={() => {
+                      if (label === 'My Orders' || label === 'Track Orders') navigate('orders');
+                      else onCustomerPanel?.(label === 'Settings' ? 'settings' : 'account');
+                      setRoleMenuOpen(false);
+                    }} className="w-full px-3.5 py-2 text-left hover:bg-neutral-50 text-neutral-700">{label}</button>
                   ))}
                 </div>}
 
