@@ -2,6 +2,7 @@
 import { ShieldCheck, MapPin, Phone, Mail, UserPlus, LogIn } from 'lucide-react';
 import { SocialPlatform, SocialProfileIcon, socialProfileHref } from './SocialProfileIcon';
 import { readPublicContent } from './publicContent';
+import { BrandLogo } from './BrandLogo';
 
 interface FooterProps {
   onOpenAuth?: (mode?: 'login' | 'signup') => void;
@@ -27,10 +28,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAuth, siteSettings = {} })
           
           {/* Brand info */}
           <div className="space-y-3">
-            <span className="flex items-center gap-2 text-base font-bold text-white tracking-tight">
-              {text('logoUrl') && <img src={text('logoUrl')} alt="" className="h-8 max-w-28 rounded-md object-contain" />}
-              {text('marketplaceName', 'SokoSalama')}
-            </span>
+            <BrandLogo name={text('marketplaceName', 'Soko Salama')} size="footer" />
             <div className="space-y-2 text-neutral-400 leading-relaxed text-xs">
               {aboutItems.length ? aboutItems.map((item, index) => <p key={`about-${index}`} className="whitespace-pre-line">{item.heading && <span className="mb-0.5 block font-semibold text-neutral-300">{item.heading}</span>}{item.body}</p>) : <p>A Kenyan marketplace connecting independent makers with shoppers across East Africa.</p>}
             </div>

@@ -40,18 +40,25 @@ export const api = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier, password }),
       });
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        const session = db.authenticateUser(identifier, password);
+        return { session, message: `Welcome back, ${session.name}!` };
+      }
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.error || 'Failed to log in');
       }
       return data;
     } catch (e: any) {
-      if (e.message && !e.message.includes('fetch')) {
+      if (e instanceof TypeError || e.message?.toLowerCase().includes('fetch')) {
+        const session = db.authenticateUser(identifier, password);
+        return { session, message: `Welcome back, ${session.name}!` };
+      }
+      if (e.message) {
         throw e;
       }
-      // Direct in-memory DB fallback
-      const session = db.authenticateUser(identifier, password);
-      return { session, message: `Welcome back, ${session.name}!` };
+      throw new Error('Unable to sign in right now. Please try again.');
     }
   },
 

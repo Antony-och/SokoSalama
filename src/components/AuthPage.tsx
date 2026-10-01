@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrandLogo } from './BrandLogo';
 import {
   ShieldCheck,
   Lock,
@@ -318,7 +319,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({
             <span>Back to Marketplace</span>
           </button>
 
-          <span className="text-sm font-bold tracking-tight text-neutral-900">SokoSalama</span>
+          <BrandLogo size="auth" />
         </div>
 
         {/* Main Authentication Card */}

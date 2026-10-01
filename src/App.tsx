@@ -10,6 +10,7 @@ import { AdminConsole } from './components/AdminConsole';
 import { AuthPage } from './components/AuthPage';
 import { CustomerProfileModal } from './components/CustomerProfileModal';
 import { Footer } from './components/Footer';
+import iconLogo from './assets/images/logo/Icon_Logo_Transparent.png';
 import { api } from './services/apiClient';
 import { 
   UserSession, 
@@ -526,9 +527,7 @@ export default function App() {
       icon.rel = 'icon';
       document.head.appendChild(icon);
     }
-    const favicon = siteValue('faviconUrl') || siteValue('logoUrl');
-    if (favicon) icon.href = favicon;
-    else icon.remove();
+    icon.href = siteValue('faviconUrl') || iconLogo;
   }, [settings]);
 
   return (
@@ -544,7 +543,6 @@ export default function App() {
         onSwitchRole={handleSwitchRole}
         vendorsList={vendors.map(v => ({ id: v.id, name: v.name }))}
         brandName={siteValue('marketplaceName', 'SokoSalama')}
-        brandLogoUrl={siteValue('logoUrl')}
         announcementEnabled={siteSettings.announcementBarEnabled === true}
         announcementText={siteValue('announcementBarText')}
         onLogout={handleLogout}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShoppingBag, ChevronDown, User, Store, ShieldAlert, LogIn, LogOut, UserPlus } from 'lucide-react';
 import { UserRole, UserSession } from '../types';
+import { BrandLogo } from './BrandLogo';
 
 interface NavbarProps {
   currentSession: UserSession;
@@ -15,7 +16,6 @@ interface NavbarProps {
   onNavigate?: (view: 'storefront' | 'orders' | 'vendor' | 'admin' | 'auth') => void;
   onCustomerPanel?: (section: 'account' | 'settings') => void;
   brandName?: string;
-  brandLogoUrl?: string;
   announcementEnabled?: boolean;
   announcementText?: string;
 }
@@ -33,7 +33,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onNavigate,
   onCustomerPanel,
   brandName = 'SokoSalama',
-  brandLogoUrl,
   announcementEnabled = false,
   announcementText = '',
 }) => {
@@ -70,8 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="text-left group cursor-pointer focus-visible:outline-none"
           >
             <span className="inline-flex items-center gap-2 text-xl font-extrabold tracking-tight text-neutral-900 group-hover:text-amber-700 transition-colors">
-              {brandLogoUrl && <img src={brandLogoUrl} alt="" className="h-8 max-w-28 rounded-md object-contain" />}
-              {brandName}
+              <BrandLogo name={brandName} size="navbar" />
             </span>
           </button>
         </div>

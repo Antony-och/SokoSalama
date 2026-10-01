@@ -200,8 +200,8 @@ export const CustomerStorefront: React.FC<CustomerStorefrontProps> = ({
       {/* ========================================================================= */}
       {/* 1. HERO SECTION: FROSTED GLASS PAVILION */}
       {/* ========================================================================= */}
-      <section className="relative mx-4 sm:mx-6 lg:mx-8 mt-4">
-        <div className="relative overflow-hidden rounded-3xl bg-neutral-950/85 backdrop-blur-2xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.25)] text-white">
+      <section className="relative mx-auto mt-5 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden rounded-3xl border border-white/15 bg-[#17191c] text-white shadow-[0_24px_70px_rgba(17,24,39,0.16)]">
           
           {/* Inner glass luminous accents */}
           <div className="absolute -top-32 -left-32 w-80 h-80 bg-amber-500/25 rounded-full blur-3xl pointer-events-none" />
@@ -210,85 +210,55 @@ export const CustomerStorefront: React.FC<CustomerStorefrontProps> = ({
           {/* Specular Top Edge Glare */}
           <div className="absolute inset-x-0 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[480px]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 lg:min-h-[540px]">
             
-            <div className="lg:col-span-7 p-8 sm:p-12 lg:p-16 flex flex-col justify-center relative z-10">
+            <div className="order-2 relative z-10 flex flex-col justify-center px-6 py-8 sm:px-10 sm:py-10 lg:order-1 lg:col-span-7 lg:px-14 lg:py-14">
               
               {/* Glass Kicker Capsule */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold text-amber-300 tracking-wider mb-4 shadow-xs w-fit">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>Kenya's #1 Marketplace</span>
-                <span aria-hidden="true" className="text-white/40">|</span>
-                <span className="text-white/80">Neutral to Every Brand</span>
+              <div className="mb-5 inline-flex w-fit items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.16em] text-amber-200">
+                <span className="h-px w-7 bg-amber-400/80" />
+                <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+                <span>Verified Kenyan Marketplace</span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4 leading-[1.12] text-balance">
+              <h1 className="mb-5 text-[2.6rem] font-extrabold leading-[1.02] tracking-[-0.055em] text-white text-balance sm:text-5xl lg:text-[3.75rem]">
                 <>
-                Shop Any Product. <br />
+                Shop with Confidence. <br />
                 <span className="bg-gradient-to-r from-white via-white/95 to-amber-200 bg-clip-text text-transparent">
-                  Protected in Escrow.
+                  Protected by Escrow.
                 </span>
                 </>
               </h1>
 
-              <p className="text-sm sm:text-base text-neutral-300 max-w-xl mb-8 leading-relaxed font-normal">
-                <>Order directly from verified Kenyan merchants across Nairobi, Mombasa, and countrywide hubs. 
-                From consumer electronics and smartphones to fashion, appliances, and local goods. 
-                Your M-Pesa payment is locked in neutral escrow until you inspect and approve delivery.</>
+              <p className="mb-8 max-w-lg text-sm font-normal leading-7 text-neutral-300 sm:text-base">
+                <>Shop trusted Kenyan merchants. Your M-Pesa payment stays protected until you approve delivery.</>
               </p>
 
               {/* Glass Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3.5 mb-8">
+              <div className="mb-2 flex flex-wrap items-center gap-3">
                 <a
                   href="#catalog-grid"
-                  className="px-6 py-3.5 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white text-sm font-semibold rounded-xl transition-all shadow-[0_8px_25px_-5px_rgba(217,119,6,0.5)] border border-amber-400/30 inline-flex items-center gap-2 cursor-pointer active:scale-98"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-amber-300/40 bg-amber-500 px-6 py-3.5 text-sm font-bold text-neutral-950 shadow-[0_12px_30px_-12px_rgba(245,158,11,0.8)] transition hover:bg-amber-400 active:scale-98"
                 >
-                  <span>Explore Catalog</span>
+                  <span>Shop Products</span>
                   <ArrowRight className="w-4 h-4" />
                 </a>
 
                 <a
                   href="#how-it-works"
-                  className="px-5 py-3.5 bg-white/10 hover:bg-white/15 backdrop-blur-md text-white text-sm font-semibold rounded-xl transition-all border border-white/20 inline-flex items-center gap-2 cursor-pointer shadow-xs"
+                  className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-white/20 bg-white/[0.04] px-5 py-3.5 text-sm font-semibold text-neutral-100 transition hover:border-white/35 hover:bg-white/[0.08]"
                 >
                   <Shield className="w-4 h-4 text-amber-400" />
-                  <span>How Escrow Works</span>
+                  <span>Buyer Protection</span>
                 </a>
-              </div>
-
-              {/* Glass Floating Proof Cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                <div className="bg-white/8 hover:bg-white/12 backdrop-blur-md border border-white/15 rounded-xl p-2.5 transition-colors">
-                  <div className="flex items-center gap-1.5 text-amber-400 text-xs font-semibold mb-0.5">
-                    <Shield className="w-3.5 h-3.5" />
-                    <span>Daraja Escrow</span>
-                  </div>
-                  <div className="text-[11px] text-neutral-300">Funds locked until delivery</div>
-                </div>
-
-                <div className="bg-white/8 hover:bg-white/12 backdrop-blur-md border border-white/15 rounded-xl p-2.5 transition-colors">
-                  <div className="flex items-center gap-1.5 text-amber-400 text-xs font-semibold mb-0.5">
-                    <Truck className="w-3.5 h-3.5" />
-                    <span>Fargo & G4S</span>
-                  </div>
-                  <div className="text-[11px] text-neutral-300">Tracked doorstep transit</div>
-                </div>
-
-                <div className="bg-white/8 hover:bg-white/12 backdrop-blur-md border border-white/15 rounded-xl p-2.5 transition-colors col-span-2 sm:col-span-1">
-                  <div className="flex items-center gap-1.5 text-amber-400 text-xs font-semibold mb-0.5">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>100% KYC Verified</span>
-                  </div>
-                  <div className="text-[11px] text-neutral-300">Audited local merchants</div>
-                </div>
               </div>
 
             </div>
 
             {/* Hero Visual Media with Glass Overlay */}
-            <div className="relative min-h-[340px] overflow-hidden lg:col-span-5 lg:min-h-full" onMouseEnter={() => setHeroPaused(true)} onMouseLeave={() => setHeroPaused(false)} onFocusCapture={() => setHeroPaused(true)} onBlurCapture={() => setHeroPaused(false)}>
-              <img key={heroSlides[heroSlide].image} src={heroSlides[heroSlide].image} alt={heroSlides[heroSlide].alt} className="h-full w-full scale-102 animate-[hero-fade_700ms_ease-in-out] object-cover object-center transition-transform duration-700 hover:scale-105 motion-reduce:animate-none" />
-              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent lg:bg-gradient-to-r lg:from-neutral-950/90 lg:via-transparent lg:to-transparent" />
+            <div className="order-1 relative min-h-[220px] overflow-hidden sm:min-h-[280px] lg:order-2 lg:col-span-5 lg:min-h-full" onMouseEnter={() => setHeroPaused(true)} onMouseLeave={() => setHeroPaused(false)} onFocusCapture={() => setHeroPaused(true)} onBlurCapture={() => setHeroPaused(false)}>
+              <img key={heroSlides[heroSlide].image} src={heroSlides[heroSlide].image} alt={heroSlides[heroSlide].alt} className="absolute inset-0 h-full w-full scale-102 animate-[hero-fade_700ms_ease-in-out] object-cover object-center transition-transform duration-700 hover:scale-105 motion-reduce:animate-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/20 to-transparent lg:bg-gradient-to-r lg:from-neutral-950/85 lg:via-neutral-950/10 lg:to-transparent" />
               <div className="absolute right-5 top-5 z-10 flex items-center gap-1.5 rounded-full border border-white/20 bg-neutral-950/40 px-2.5 py-2 backdrop-blur-md" aria-label="Hero slideshow controls">
                 {heroSlides.map((slide, index) => <button key={slide.image} type="button" onClick={() => setHeroSlide(index)} aria-label={`Show ${slide.title} slide`} aria-pressed={heroSlide === index} className={`h-2 rounded-full transition-all ${heroSlide === index ? 'w-5 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'}`} />)}
               </div>
@@ -322,7 +292,7 @@ export const CustomerStorefront: React.FC<CustomerStorefrontProps> = ({
         const activeDeals = hotDeals.filter((d) => d.isActive);
         if (activeDeals.length === 0) {
           return (
-            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="relative overflow-hidden bg-white/55 backdrop-blur-2xl rounded-3xl p-8 border border-white/80 shadow-[0_12px_40px_rgba(0,0,0,0.03)] text-center">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 mb-3">
                   <Flame className="w-6 h-6 text-amber-500 animate-pulse" />
@@ -339,7 +309,7 @@ export const CustomerStorefront: React.FC<CustomerStorefrontProps> = ({
         }
 
         return (
-          <section id="hot-deals" className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <section id="hot-deals" className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             
             {/* Luminous Warm Backlight for Frosted Refraction */}
             <div className="absolute -top-10 left-1/3 w-96 h-96 bg-gradient-to-br from-amber-500/15 via-rose-500/12 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
@@ -375,7 +345,7 @@ export const CustomerStorefront: React.FC<CustomerStorefrontProps> = ({
                 </div>
               </div>
 
-              {/* Deal Cards Grid - Square Redesign */}
+              {/* Deal Cards Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {activeDeals.map((deal) => {
                   const product = products.find((p) => p.id === deal.productId);

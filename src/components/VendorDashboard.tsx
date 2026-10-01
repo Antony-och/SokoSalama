@@ -49,6 +49,11 @@ import {
   Dispute 
 } from '../types';
 
+const parseProductImageUrls = (value: string, fallback = '') => {
+  const urls = [...new Set(value.split(/\r?\n/).map((url) => url.trim()).filter(Boolean))];
+  return urls.length ? urls : fallback ? [fallback] : [];
+};
+
 interface VendorDashboardProps {
   currentSession: UserSession;
   vendor: Vendor;
@@ -305,7 +310,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
         category: newCategory,
         condition: newCondition,
         description: newDesc.trim(),
-        images: [newImageUrl.trim() || 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600&auto=format&fit=crop&q=80'],
+        images: parseProductImageUrls(newImageUrl, 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600&auto=format&fit=crop&q=80'),
         attributes: [{ name: 'Edition / Variant', options: [newVariantLabel.trim() || 'Standard Edition'] }],
         slug: newTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
       });
@@ -334,7 +339,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
     setEditCategory(product.category);
     setEditCondition(product.condition || 'new');
     setEditDesc(product.description);
-    setEditImageUrl(product.images[0] || 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600&auto=format&fit=crop&q=80');
+    setEditImageUrl(product.images.join('\n') || 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600&auto=format&fit=crop&q=80');
   };
 
   const handleEditProductSubmit = async (e: React.FormEvent) => {
@@ -351,7 +356,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
         category: editCategory,
         condition: editCondition,
         description: editDesc.trim(),
-        images: [editImageUrl.trim()],
+        images: parseProductImageUrls(editImageUrl),
       });
       setEditingProduct(null);
       showToast(`Product "${editTitle}" updated successfully.`);
@@ -2296,30 +2301,28 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
               <div className="space-y-2">
                 <div className="flex items-center gap-2 border-b border-neutral-200 pb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-[10px] text-amber-900">4</span>Product imagery</div>
                 <label className="block text-xs font-semibold text-neutral-700 mb-1">
-                  Product Image URL <span className="text-rose-600">*</span>
+                  Product Image URLs <span className="text-rose-600">*</span>
                 </label>
-                <div className="mb-3 flex gap-2 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 p-3">
-                  <input
-                    type="text"
+                <div className="mb-3 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 p-3">
+                  <textarea
+                    rows={3}
                     required
                     value={newImageUrl}
                     onChange={(e) => setNewImageUrl(e.target.value)}
-                    className="min-w-0 flex-1 rounded-xl border border-neutral-200 bg-white px-3 py-2.5 font-mono text-[11px] text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
-                    placeholder="https://images.unsplash.com/... or asset URL"
+                    className="w-full resize-y rounded-xl border border-neutral-200 bg-white px-3 py-2.5 font-mono text-[11px] text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-100"
+                    placeholder="Paste one image URL per line"
                   />
-                  {newImageUrl && (
-                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-neutral-200 bg-white p-0.5">
-                      <img
-                        src={newImageUrl}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect fill="%23eee" width="40" height="40"/><text fill="%23aaa" font-size="10" x="50%" y="50%" text-anchor="middle" dy="3">Preview</text></svg>';
-                        }}
-                      />
+                  {parseProductImageUrls(newImageUrl).length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {parseProductImageUrls(newImageUrl).map((image, index) => (
+                        <div key={`${image}-${index}`} className="h-12 w-12 overflow-hidden rounded-lg border border-neutral-200 bg-white">
+                          <img src={image} alt={`Image ${index + 1} preview`} className="h-full w-full object-cover" />
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
+                <p className="-mt-2 mb-3 text-[10px] text-neutral-500">Add multiple views by placing each image URL on its own line.</p>
 
                 <div className="mb-2 text-[11px] font-semibold text-neutral-600">
                   Quick Preset Category Imagery:
@@ -2487,28 +2490,27 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1">Product Image URL</label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
+                <label className="block text-xs font-semibold text-neutral-700 mb-1">Product Image URLs</label>
+                <div>
+                  <textarea
+                    rows={3}
                     required
                     value={editImageUrl}
                     onChange={(e) => setEditImageUrl(e.target.value)}
-                    className="flex-1 text-xs p-2.5 border border-neutral-300 rounded-lg font-mono text-[11px]"
+                    className="w-full resize-y text-xs p-2.5 border border-neutral-300 rounded-lg font-mono text-[11px]"
+                    placeholder="Paste one image URL per line"
                   />
-                  {editImageUrl && (
-                    <div className="w-10 h-10 rounded-lg border border-neutral-200 overflow-hidden shrink-0 bg-neutral-100">
-                      <img
-                        src={editImageUrl}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect fill="%23eee" width="40" height="40"/><text fill="%23aaa" font-size="10" x="50%" y="50%" text-anchor="middle" dy="3">Preview</text></svg>';
-                        }}
-                      />
+                  {parseProductImageUrls(editImageUrl).length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {parseProductImageUrls(editImageUrl).map((image, index) => (
+                        <div key={`${image}-${index}`} className="h-10 w-10 overflow-hidden rounded-lg border border-neutral-200 bg-neutral-100">
+                          <img src={image} alt={`Image ${index + 1} preview`} className="h-full w-full object-cover" />
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
+                <p className="mt-1 text-[10px] text-neutral-500">One image URL per line. These appear as selectable photos in the product popup.</p>
               </div>
 
               <div className="flex gap-2.5 pt-3 border-t border-neutral-200">

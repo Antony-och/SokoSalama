@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, Check, ShieldCheck, Truck, Star, ArrowRight } from 'lucide-react';
 import { Product, ProductReview } from '../types';
 
@@ -15,21 +15,35 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onAddToCart,
   reviews,
 }) => {
-  if (!product) return null;
-
   // Selected attributes state
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
-    product.attributes.forEach((attr) => {
+    product?.attributes.forEach((attr) => {
       if (attr.options.length > 0) {
         initial[attr.name] = attr.options[0];
       }
     });
     return initial;
   });
-
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [addedNotice, setAddedNotice] = useState(false);
+
+  useEffect(() => {
+    setSelectedImageIndex(0);
+    setQuantity(1);
+    setAddedNotice(false);
+    const initial: Record<string, string> = {};
+    product?.attributes.forEach((attr) => {
+      if (attr.options.length > 0) initial[attr.name] = attr.options[0];
+    });
+    setSelectedAttributes(initial);
+  }, [product?.id]);
+
+  if (!product) return null;
+
+  const productImages = product.images?.filter(Boolean) ?? [];
+  const selectedImage = productImages[selectedImageIndex] || productImages[0];
 
   const productReviews = reviews.filter((r) => r.productId === product.id);
 
@@ -60,11 +74,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Image Column */}
-          <div className="bg-neutral-100/60 backdrop-blur-md flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-neutral-200/70">
+          <div className="flex flex-col justify-center gap-3 border-b border-neutral-200/70 bg-neutral-100/60 p-6 backdrop-blur-md md:border-b-0 md:border-r">
             <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl bg-neutral-200 shadow-xs">
               <img
-                src={product.images[0]}
-                alt={product.title}
+                src={selectedImage}
+                alt={`${product.title}${productImages.length > 1 ? `, image ${selectedImageIndex + 1} of ${productImages.length}` : ''}`}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -72,6 +86,22 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 }}
               />
             </div>
+            {productImages.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Product images">
+                {productImages.map((image, index) => (
+                  <button
+                    key={`${image}-${index}`}
+                    type="button"
+                    onClick={() => setSelectedImageIndex(index)}
+                    aria-label={`Show product image ${index + 1}`}
+                    aria-pressed={selectedImageIndex === index}
+                    className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition ${selectedImageIndex === index ? 'border-amber-600' : 'border-transparent hover:border-neutral-300'}`}
+                  >
+                    <img src={image} alt="" className="h-full w-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Product Details Column */}
