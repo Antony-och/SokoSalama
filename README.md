@@ -2,6 +2,12 @@
 
 SokoSalama is a responsive multi-vendor marketplace demo for Kenyan merchants and shoppers. It brings the public storefront, customer shopping flow, vendor workspace, and platform administration tools together in one React application.
 
+## Preview
+
+<p align="center">
+  <img src="src/assets/images/preview.png" alt="SokoSalama marketplace storefront preview" width="720" />
+</p>
+
 > **Project status:** This repository is a functional UI and API demo backed by an in-memory data store. It is useful for local development and product walkthroughs, but it is not a production commerce service. Data resets when the server restarts, and authentication and payment flows are not a substitute for production identity, payment, or security infrastructure.
 
 ## Features
